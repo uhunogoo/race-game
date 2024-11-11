@@ -7,6 +7,7 @@ import { useKeyboardControls } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { sub } from 'framer-motion/client';
 import useGame from '../stores/useGame';
+import { useDataTexture } from './useDataTexture';
 
 function Player() {
   const playerRef = React.useRef();
@@ -23,6 +24,9 @@ function Player() {
   const smoothedCameraPosition = React.useMemo(() => new THREE.Vector3(10, 10, 10), []);
   const smoothedCameraTarget = React.useMemo(() => new THREE.Vector3(), []);
   
+  // data texture
+  const [texture, updateTexture ] = useDataTexture();
+
   // jump
   function jump() {
     const origin = playerRef.current.translation();
@@ -137,24 +141,34 @@ function Player() {
     if (  playerPosition.y < -4 ) {
       restart();
     }
+
+    // update texture
+    updateTexture( playerPosition );
   });
   
   return (
-    <RigidBody 
-      ref={ playerRef} 
-      canSleep={ false } 
-      colliders="ball" 
-      restitution={0.2} 
-      friction={1} 
-      linearDamping={0.5}
-      angularDamping={0.5}
-      position={[ 0, 1, 0 ]}
-    >
-      <mesh castShadow>
-        <icosahedronGeometry args={[ 0.3, 1 ]} />
-        <meshStandardMaterial flatShading color="mediumpurple" />
+    <>
+      <RigidBody 
+        ref={ playerRef} 
+        canSleep={ false } 
+        colliders="ball" 
+        restitution={0.2} 
+        friction={1} 
+        linearDamping={0.5}
+        angularDamping={0.5}
+        position={[ 0, 1, 0 ]}
+      >
+        <mesh castShadow>
+          <icosahedronGeometry args={[ 0.3, 1 ]} />
+          <meshStandardMaterial flatShading color="mediumpurple" />
+        </mesh>
+
+      </RigidBody>
+      <mesh position={[ 0, 1, 0 ]}>
+        <planeGeometry args={[ 0.5, 0.5 ]} />
+        <meshBasicMaterial map={ texture } side={ THREE.DoubleSide } />
       </mesh>
-    </RigidBody>
+    </>
   )
 }
 

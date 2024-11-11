@@ -9,16 +9,16 @@ function Laser({ position, geometry, floorMaterial, obstacleMaterial }) {
   const currentPosition = position || [ 0, 0, 0 ];
   const restart = useGame( (state) => state.restart );
   const timeOffset = React.useMemo(() => Math.random() * Math.PI * 2, []);
-  
-  React.useEffect(() => {
-    const unsubscribeReset = useGame.subscribe( 
-      (state) => state.phase,
-      (phase) => {
-        if ( phase === 'ready' ) reset();
-      }
-    );
-    return () => unsubscribeReset();
-  }, []);
+
+  // React.useEffect(() => {
+  //   const unsubscribeReset = useGame.subscribe( 
+  //     (state) => state.phase,
+  //     (phase) => {
+  //       if ( phase === 'ready' ) reset();
+  //     }
+  //   );
+  //   return () => unsubscribeReset();
+  // }, []);
 
   useFrame((state, delta) => {
     if (!laserRef.current) return;
